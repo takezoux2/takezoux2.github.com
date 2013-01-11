@@ -58,7 +58,7 @@ function generateField(f){
     
     
     if(f.indexed || f.defaultValue){
-      code += "}"
+      code += "  }"
     }
     
     
@@ -169,8 +169,8 @@ function CodeControl($scope){
 					<li ng-repeat="f in fields">
 					    <input type="text" ng-model="f.name"  ng-change="generateCode()"/>
 					    <select ng-model="f.classType" ng-options="c as c.name for c in classTypes"  ng-change="generateCode()"></select>
-					    <input type="checkbox" ng-model="f.indexed" ng-change="generateCode()" />Index
 					    Default:<input type="text" ng-model="f.defaultValue" ng-change="generateCode()" />
+					    <input type="checkbox" ng-model="f.indexed" ng-change="generateCode()" />Index
 					    [<a href ng-click="fields.splice($index, 1);generateCode();">x</a>]
 					</li>
 				</ul>
