@@ -1,0 +1,160 @@
+<html ng-app="">
+    <head>
+        <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script> -->
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular.min.js"></script>
+        
+        <script type="text/javascript">
+        
+function generate(className,fields){
+
+    //alert(className);
+    
+    var fieldsCode = "";
+    
+    console.log("##");
+    console.log(fields);
+    for(i in fields){
+        fieldsCode += generateField(fields[i]);
+    }
+    
+
+    var codeWithIDPK = "import net.liftweb.mapper._\r\n" + 
+"\r\n" + 
+"object " + className + " extends " + className + " with LongKeyedMetaMapper[" + className + "]{\r\n" + 
+"\r\n" + 
+"\r\n" + 
+"}\r\n" + 
+"class " + className + " extends LongKeyedMapper[" + className + "] with IdPK{\r\n" + 
+"\r\n" + 
+"  def getSingleton = " + className + "\r\n" + 
+"\r\n" + fieldsCode + 
+"}";
+
+    return codeWithIDPK;
+}
+
+function generateField(f){
+    
+    return "  object " + f.name + " extends " + f.classType.def + "\r\n";
+}
+
+var classTypes = [
+    {"name" : "Long" , "def":"MappedLong(this)"},
+    {"name" : "Int" , "def":"MappedInt(this)"},
+    {"name" : "String(VARCHAR)" , "def":"MappedString(this,128)"},
+    {"name" : "String(Text)" , "def":"MappedText(this)"},
+    {"name" : "Date" , "def":"MappedDateTime(this)"},
+    {"name" : "Custom" , "def":""},
+  ];
+
+function guessFieldType(fieldName){
+    fieldName = fieldName.toLowerCase();
+    
+    var last = fieldName.substr(-2)
+    if(last == "id"){
+      return classTypes[0];
+    }
+    
+    last = fieldName.substr(-4);
+    if(last == "name"){
+      return classTypes[2];
+    }else if(last == "time"){
+      return classTypes[4];
+    }
+    
+    last = fieldName.substr(-5);
+    if(last == "state"){
+      return classTypes[1];
+    }
+    
+    last = fieldName.substr(-6);
+    if(last == "status"){
+      return classTypes[1];
+    }
+    
+    
+    return null;
+}
+
+function CodeControl($scope){
+
+  $scope.classTypes = classTypes;
+  
+  $scope.generateCode = function(){
+    console.log($scope.fields);
+    $scope.code = generate($scope.className,$scope.fields);
+  };
+  
+  $scope.addField = function(){
+  
+    $scope.fields.push({"name" : $scope.newFieldName, "classType" : $scope.newFieldType});
+    console.log($scope.fields);
+    $scope.newFieldName = "";
+    
+    $scope.generateCode();
+  };
+  
+  $scope.guessType = function(){
+  
+    var t = guessFieldType($scope.newFieldName)
+    if(t != null){
+       $scope.newFieldType = t;
+    }
+  };
+  
+  $scope.fields = [];
+  $scope.newFieldType = $scope.classTypes[0];
+  $scope.code="Not generated yet";
+  $scope.className="User";
+
+}
+
+        </script>
+        <style type="text/css">
+#code {
+  width : 100%;
+  height: 300px;
+}
+
+.field-list{
+  list-style-type:none
+}
+        </style>
+    </head>
+    
+    <body>
+        <h1>lift-mapper model generator</h1>
+        <div ng-controller="CodeControl">
+        
+          <div ng-submit="generateCode()">
+            <div>ClassName:<input type="text" ng-model="className" ng-change="generateCode()"/></div>
+          
+          <h3>Field</h3>
+          <div>
+			<div>
+	            <ul class="field-list">
+					<li ng-repeat="f in fields">
+					    <input type="text" ng-model="f.name"  ng-change="generateCode()"/>
+					    <select ng-model="f.classType" ng-options="c as c.name for c in classTypes"  ng-change="generateCode()"></select>
+					    [<a href ng-click="fields.splice($index, 1)">x</a>]
+					</li>
+				</ul>
+			</div>
+			<div>
+				FieldName:<input type="text" ng-model="newFieldName" ng-change="guessType()" />
+				Type:<select ng-model="newFieldType" ng-options="c as c.name for c in classTypes"></select>
+				<button ng-click="addField()" value="Add">Add</button>
+			</div>
+          </div>
+          
+          </div>
+          
+          
+          <h3>Code</h3>
+          <textarea id="code" ng-model="code"></textarea>
+      
+        </div>
+    
+    </body>
+    
+</html>    
