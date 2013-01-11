@@ -30,12 +30,40 @@ function generate(className,fields){
 "\r\n" + fieldsCode + 
 "}";
 
+    if(codeWithIDPK.indexOf("new Date") >= 0){
+      codeWithIDPK = "import java.util.Date\r\n" + codeWithIDPK
+    }
+
     return codeWithIDPK;
 }
 
 function generateField(f){
     
-    return "  object " + f.name + " extends " + f.classType.def + "\r\n";
+    var code = "  object " + f.name + " extends " + f.classType.def;
+    
+    if(f.indexed || f.defaultValue){
+      code += "{\r\n"
+    }
+    if(f.indexed){
+      code += "    override def dbIndexed_? = true\r\n"
+    }
+    if(f.defaultValue){
+        if(f.classType.name.indexOf("String") == 0){
+            code += "    override def defaultValue = \"" + f.defaultValue + "\"\r\n"
+        }else{
+            code += "    override def defaultValue = " + f.defaultValue + "\r\n"
+        }
+    
+    }
+    
+    
+    if(f.indexed || f.defaultValue){
+      code += "}"
+    }
+    
+    
+    
+    return code + "\r\n"
 }
 
 var classTypes = [
@@ -50,6 +78,9 @@ var classTypes = [
 function guessFieldType(fieldName){
     fieldName = fieldName.toLowerCase();
     
+    if(fieldName == "created")return classTypes[4];
+    if(fieldName == "updated")return classTypes[4];
+    
     var last = fieldName.substr(-2)
     if(last == "id"){
       return classTypes[0];
@@ -59,6 +90,8 @@ function guessFieldType(fieldName){
     if(last == "name"){
       return classTypes[2];
     }else if(last == "time"){
+      return classTypes[4];
+    }else if(last == "date"){
       return classTypes[4];
     }
     
@@ -136,7 +169,9 @@ function CodeControl($scope){
 					<li ng-repeat="f in fields">
 					    <input type="text" ng-model="f.name"  ng-change="generateCode()"/>
 					    <select ng-model="f.classType" ng-options="c as c.name for c in classTypes"  ng-change="generateCode()"></select>
-					    [<a href ng-click="fields.splice($index, 1)">x</a>]
+					    <input type="checkbox" ng-model="f.indexed" ng-change="generateCode()" />Index
+					    Default:<input type="text" ng-model="f.defaultValue" ng-change="generateCode()" />
+					    [<a href ng-click="fields.splice($index, 1);generateCode();">x</a>]
 					</li>
 				</ul>
 			</div>
