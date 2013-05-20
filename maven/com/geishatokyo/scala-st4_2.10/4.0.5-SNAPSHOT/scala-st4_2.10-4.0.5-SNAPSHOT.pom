@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.geishatokyo</groupId>
+    <artifactId>scala-st4_2.10</artifactId>
+    <packaging>jar</packaging>
+    <description>scala-st4</description>
+    <version>4.0.5-SNAPSHOT</version>
+    <name>scala-st4</name>
+    <organization>
+        <name>com.geishatokyo</name>
+    </organization>
+    <url>https://github.com/geishatokyo/scala-st4</url>
+    <licenses>
+        <license>
+            <name>BSD license</name>
+            <url>http://antlr.org/license.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git://github.com/geishatokyo/scala-st4.git</connection>
+        <developerConnection>scm:git:git@github.com/geishatokyo/scala-st4.git</developerConnection>
+        <url>scm:git:git://github.com/geishatokyo/scala-st4.git</url>
+    </scm>
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/geishatokyo/scala-st4/issues</url>
+    </issueManagement>
+    <developers>
+        <developer>
+            <id>takezoux2</id>
+            <name>Takeshita, Yoshiteru</name>
+            <email>takeshita@geishatokyo.com</email>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.10.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>ST4</artifactId>
+            <version>4.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2_2.10</artifactId>
+            <version>1.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
